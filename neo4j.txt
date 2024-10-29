@@ -1,43 +1,73 @@
-CREATE (:Employee {name: "Yash Pimpalkar", age: 25, position: "Data Engineer", salary: 70000})
-CREATE (:Employee {name: "Alice Smith", age: 30, position: "Data Scientist", salary: 90000})
-CREATE (:Employee {name: "John Doe", age: 28, position: "Software Developer", salary: 85000})
-CREATE (:Employee {name: "Emily Johnson", age: 32, position: "Data Engineer", salary: 92000})
-CREATE (:Employee {name: "Michael Brown", age: 27, position: "Analyst", salary: 75000})
+// Create Employee nodes
+CREATE (:Employee {name: "Yash Pimpalkar", age: 25, position: "Data Engineer", salary: 70000});
+CREATE (:Employee {name: "Alice Smith", age: 30, position: "Data Scientist", salary: 90000});
+CREATE (:Employee {name: "John Doe", age: 28, position: "Software Developer", salary: 85000});
+CREATE (:Employee {name: "Emily Johnson", age: 32, position: "Data Engineer", salary: 92000});
+CREATE (:Employee {name: "Michael Brown", age: 27, position: "Analyst", salary: 75000});
 
+// Create initial relationships
 MATCH (e1:Employee {name: "Yash Pimpalkar"}), (e2:Employee {name: "Alice Smith"})
-CREATE (e1)-[:REPORTS_TO]->(e2)
+CREATE (e1)-[:REPORTS_TO]->(e2);
 
 MATCH (e1:Employee {name: "John Doe"}), (e2:Employee {name: "Emily Johnson"})
-CREATE (e1)-[:REPORTS_TO]->(e2)
+CREATE (e1)-[:REPORTS_TO]->(e2);
 
 MATCH (e1:Employee {name: "Michael Brown"}), (e2:Employee {name: "Alice Smith"})
-CREATE (e1)-[:REPORTS_TO]->(e2)
+CREATE (e1)-[:REPORTS_TO]->(e2);
 
 // Retrieve all Employee nodes
 MATCH (e:Employee)
-RETURN e
+RETURN e;
 
 // Find a specific Employee by name
 MATCH (e:Employee {name: "Yash Pimpalkar"})
-RETURN e
+RETURN e;
 
 // Find employees who report to Alice Smith
 MATCH (e:Employee)-[:REPORTS_TO]->(manager:Employee {name: "Alice Smith"})
-RETURN e, manager
+RETURN e, manager;
 
 // Find all employees with a salary greater than 80000
 MATCH (e:Employee)
 WHERE e.salary > 80000
-RETURN e
+RETURN e;
 
 // Update Yash Pimpalkar's position to "Senior Data Engineer"
 MATCH (e:Employee {name: "Yash Pimpalkar"})
-SET e.position = "Senior Data Engineer"
+SET e.position = "Senior Data Engineer";
 
 // Increase the salary of all Data Engineers by 5000
 MATCH (e:Employee {position: "Data Engineer"})
-SET e.salary = e.salary + 5000
+SET e.salary = e.salary + 5000;
 
 // Change Michael Brown’s position to "Senior Analyst"
 MATCH (e:Employee {name: "Michael Brown"})
-SET e.position = "Senior Analyst"
+SET e.position = "Senior Analyst";
+
+// Update Relationships
+// If Yash Pimpalkar should now report to a different employee, update the relationship
+MATCH (e1:Employee {name: "Yash Pimpalkar"})-[r:REPORTS_TO]->(e2:Employee {name: "Alice Smith"})
+DELETE r
+WITH e1
+MATCH (newManager:Employee {name: "Emily Johnson"})
+CREATE (e1)-[:REPORTS_TO]->(newManager);
+
+// If Michael Brown should now report to Emily Johnson instead of Alice Smith
+MATCH (e1:Employee {name: "Michael Brown"})-[r:REPORTS_TO]->(e2:Employee {name: "Alice Smith"})
+DELETE r
+WITH e1
+MATCH (newManager:Employee {name: "Emily Johnson"})
+CREATE (e1)-[:REPORTS_TO]->(newManager);
+
+// Delete Commands
+// Delete a specific Employee node by name
+MATCH (e:Employee {name: "John Doe"})
+DETACH DELETE e;
+
+// Delete all REPORTS_TO relationships
+MATCH ()-[r:REPORTS_TO]->()
+DELETE r;
+
+// Delete all Employee nodes and their relationships (use with caution)
+MATCH (e:Employee)
+DETACH DELETE e;

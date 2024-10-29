@@ -1,0 +1,56 @@
+# Load necessary library
+install.packages("igraph")
+library(igraph)
+
+# Set seed for reproducibility
+set.seed(42)
+
+# Step 1: Create Nodes (people) and Edges (connections)
+# Create a simple network with 10 people and random connections
+nodes <- data.frame(
+  id = 1:10,
+  name = c("Alice", "Bob", "Cathy", "David", "Ella", "Frank", "Grace", "Hank", "Ivy", "Jack")
+)
+
+# Define relationships between nodes (edges)
+edges <- data.frame(
+  from = sample(1:10, 15, replace = TRUE),
+  to = sample(1:10, 15, replace = TRUE)
+)
+
+# Remove self-loops (connections where from = to)
+edges <- edges[edges$from != edges$to, ]
+
+# Step 2: Create the Graph
+g <- graph_from_data_frame(d = edges, vertices = nodes, directed = FALSE)
+
+# Step 3: Plot the Network
+plot(g, vertex.label = V(g)$name, main = "Social Network")
+
+# Step 4: Centrality Analysis
+# 1. Degree Centrality
+degree_cent <- degree(g)
+print("Degree Centrality:")
+print(degree_cent)
+
+# 2. Betweenness Centrality
+betweenness_cent <- betweenness(g)
+print("Betweenness Centrality:")
+print(betweenness_cent)
+
+# 3. Closeness Centrality
+closeness_cent <- closeness(g)
+print("Closeness Centrality:")
+print(closeness_cent)
+
+# Visualize Degree Centrality by Adjusting Node Size
+plot(g, vertex.size = degree_cent * 3, vertex.label = V(g)$name, main = "Network with Degree Centrality")
+
+# Step 5: Community Detection
+# Detect communities within the network
+communities <- cluster_edge_betweenness(g)
+print("Detected Communities:")
+print(membership(communities))
+
+# Visualize communities
+plot(communities, g, vertex.label = V(g)$name, main = "Community Detection")

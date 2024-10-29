@@ -1,0 +1,64 @@
+use company_database
+
+db.employee.insertMany([
+    { name: "Yash Pimpalkar", age: 25, position: "Data Engineer", salary: 70000 },
+    { name: "Alice Smith", age: 30, position: "Data Scientist", salary: 90000 },
+    { name: "John Doe", age: 28, position: "Software Developer", salary: 85000 },
+    { name: "Emily Johnson", age: 32, position: "Data Engineer", salary: 92000 },
+    { name: "Michael Brown", age: 27, position: "Business Analyst", salary: 75000 },
+    { name: "Sarah Lee", age: 29, position: "Project Manager", salary: 100000 },
+    { name: "David Kim", age: 35, position: "Data Architect", salary: 110000 },
+    { name: "Olivia Garcia", age: 26, position: "Quality Assurance", salary: 72000 },
+    { name: "James Wilson", age: 33, position: "Backend Developer", salary: 95000 },
+    { name: "Sophia Taylor", age: 31, position: "Frontend Developer", salary: 88000 }
+])
+
+db.employee.find().pretty()
+// Insert a single document
+db.employee.insertOne({ name: "Liam Roberts", age: 29, position: "DevOps Engineer", salary: 80000 })
+
+// Insert multiple documents
+db.employee.insertMany([
+    { name: "Noah Martinez", age: 34, position: "Cloud Engineer", salary: 95000 },
+    { name: "Mia White", age: 27, position: "Product Designer", salary: 85000 }
+])
+
+// Retrieve all documents
+db.employee.find().pretty()
+
+// Retrieve a specific document by name
+db.employee.find({ name: "Yash Pimpalkar" }).pretty()
+
+// Retrieve employees with a salary greater than 80000
+db.employee.find({ salary: { $gt: 80000 } }).pretty()
+
+// Retrieve employees who are "Data Engineers"
+db.employee.find({ position: "Data Engineer" }).pretty()
+
+// Update Yash Pimpalkar's position
+db.employee.updateOne(
+    { name: "Yash Pimpalkar" },
+    { $set: { position: "Senior Data Engineer" } }
+)
+
+// Update salary for all employees who are Data Engineers
+db.employee.updateMany(
+    { position: "Data Engineer" },
+    { $set: { salary: 95000 } }
+)
+
+// Increase salary by 5000 for employees earning less than 90000
+db.employee.updateMany(
+    { salary: { $lt: 90000 } },
+    { $inc: { salary: 5000 } }
+)
+
+
+// Delete a specific employee by name
+db.employee.deleteOne({ name: "Michael Brown" })
+
+// Delete all employees with the position "Quality Assurance"
+db.employee.deleteMany({ position: "Quality Assurance" })
+
+// Delete all documents (use cautiously)
+db.employee.deleteMany({})
